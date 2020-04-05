@@ -68,14 +68,14 @@
         }
       }
 
-      $.getJSON("lunchData.txt", function(json) {
+      $.getJSON("data/lunchData.txt", function(json) {
         jsonLunchData = json
         var tempD = json.additionalData.dates[0]
         visualizeLunchDate(jsonLunchData, tempD)
 
       });
 
-      $.getJSON("addData.txt", function(json) {
+      $.getJSON("data/addData.txt", function(json) {
         jsonAddData = json
         json.dates.forEach(function(d){
           var a = document.createElement("a")
