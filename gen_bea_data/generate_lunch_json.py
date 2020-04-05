@@ -23,14 +23,21 @@ def getLunchDates(startDate):
 
 
 path = ""
+configPath = ""
 additionalDataFilename = "addData.txt"
 ldataFilename = "lunchData.txt"
 configFilename = "lunchData.config"
 configToClass = {'': SiteParse, 'Gastrogate': Gastrogate, 'Sidahuset': Sidahuset, 'Filmhuset': Filmhuset, 'Styrman': Styrman}
 lunchDates = getLunchDates(datetime.date.today())
 
-if sys.argv[1:]:
+if sys.argv[1]:
     path = sys.argv[1]
+    configPath = sys.argv[1]
+
+if sys.argv[2:]:
+    path = sys.argv[1]
+    configPath = sys.argv[2]
+
 statuses = []
 
 statusAdditional = False
@@ -80,7 +87,7 @@ else:
     lunchData['additionalData'] = additionalData
     lunchData['houses'] = []
     config = configparser.ConfigParser()
-    config.read(path + configFilename)
+    config.read(configPath + configFilename)
 
     for i in config.sections():
         h = configToClass[config[i]['type']](config[i]['url'], i,lunchDates)
