@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="sv" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>fpsBea</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </head>
+  <body class="bg-white">
+
+    <div class="jumbotron jumbotron-fluid border-bottom bg-light p-4">
+        <div class="container">
+            <h1 class="display-5">
+                <span id="dayTitle"></span> bea!
+                <small class="text-muted">och lunch</small>
+            </h1>
+            <hr class="my-4">
+            <h4 id="dayHeader">
+            </h4>
+
+        </div>
+    </div>
+    <nav>
+      <div class="nav nav-tabs" id="navDays" role="tablist">
+      </div>
+    </nav>
+
+    <div class="container p-4">
+
+
+      <div class="card-columns" id="houseColumns">
+      </div>
+
+      <footer class="pager-footer border-top pt-3">
+        <div class="container">
+        <p class="text-center">
+          Senast uppdaterad: <span id="timestamp"></span>
+        </p>
+      </div>
+      </footer>
+    </div>
+    <script>
+      var beaRegex = /b[eéè][aáà]/gi;
+      var beaDishExeption =  new Map([
+        ['Londoner', /black angus|burgare/gi]
+      ])
+      var hideDishes = false
+
+      var jsonLunchData = "";
+      var jsonAddData = "";
+
+      function isBeaDish(dishText, restaurant){
+        return dishText.match(beaRegex)
+      }
+
+      function isExceptionDish(dishText, restaurant){
+        var pattern = beaDishExeption.get(restaurant)
+        if(pattern){
+          return dishText.match(pattern)
+        } else {
+          return false
+        }
+      }
+
+      $.getJSON("lunchData.txt", function(json) {
+        jsonLunchData = json
+        var tempD = json.additionalData.dates[0]
+        visualizeLunchDate(jsonLunchData, tempD)
+
+      });
+
+      $.getJSON("addData.txt", function(json) {
+        jsonAddData = json
+        json.dates.forEach(function(d){
+          var a = document.createElement("a")
+          a.id = d.date
+          a.className = "nav-item nav-link text-secondary"
+          a.href = "#"
+          a.dataset.toggle = "tab"
+          a.role = "tab"
+          a.appendChild(document.createTextNode(getDayNameOrTodayMenu(d.date)))
+          document.getElementById("navDays").appendChild(a)
+        })
+        var c = document.getElementById("navDays").children[0].className += " active"
+        addListener(jsonAddData)
+      })
+
+      function addListener(json){
+        json.dates.forEach(function(d){
+          $("#" + d.date).click(function(){ visualizeLunchDate(jsonLunchData,d) })
+        })
+      }
+
+      function getHolidayByDateInJson(data, date) {
+        return data.filter(
+          function(data){return data.date == date }
+        );
+      }
+
+      function capitalizeFirstLetter(string) {
+        return string[0].toUpperCase() + string.slice(1);
+      }
+
+      function clearDomLunchDate(){
+        document.getElementById("houseColumns").innerHTML = ""
+        document.getElementById("dayTitle").innerHTML = ""
+        document.getElementById("dayHeader").innerHTML = ""
+      }
+
+      function getDayNameOrToday(inputDate){
+          var options = { weekday: 'long'};
+          var day = new Date(inputDate).toLocaleDateString("sv-SE",options)
+          var today = new Date().toLocaleDateString("sv-SE",options)
+          if(day == today){
+            return "dag"
+          } else {
+            return day
+          }
+
+      }
+
+      function getDayNameOrTodayMenu(inputDate){
+          var options = { weekday: 'long'};
+          var day = new Date(inputDate).toLocaleDateString("sv-SE",options)
+          var today = new Date().toLocaleDateString("sv-SE",options)
+          if(day == today){
+            return "idag"
+          } else {
+            return day
+          }
+
+      }
+
+      function visualizeLunchDate(json, inputDate){
+        clearDomLunchDate()
+        var bDay = false
+        var options = { weekday: 'long'};
+        var options2 = { weekday: 'long', month: 'long', day: 'numeric' };
+        document.getElementById("dayTitle").innerHTML = capitalizeFirstLetter(getDayNameOrToday(inputDate.date)) + "ens"
+        document.getElementById("dayHeader").innerHTML+=" " + new Date(inputDate.date).toLocaleDateString("sv-SE",options2) + " "
+
+          document.getElementById("timestamp").innerHTML=json.created
+          json.houses.forEach(function(e){
+              var card = document.createElement("div")
+              card.className="card shadow"
+
+              var cardBody = document.createElement("div")
+              cardBody.className = "card-body"
+
+              var cardTitle = document.createElement("div")
+              cardTitle.className = "card-header"
+
+              var textnode = document.createTextNode(e.house)
+
+              var cardBody2 = document.createElement("div")
+              cardBody2.className = "card-body"
+              var a = document.createElement("a")
+              a.href = e.url
+              a.target = "_blank"
+              a.className = "text-secondary"
+              a.appendChild(document.createTextNode("Till menyn"))
+
+              var list = document.createElement("ul")
+              list.className = "list-group list-group-flush"
+
+              if(!hideDishes && e.dishesPerDate[inputDate.date]){
+                e.dishesPerDate[inputDate.date].forEach(function(d){
+                  var li = document.createElement("li")
+                  var text = document.createTextNode(d + " ")
+                  li.className = "list-group-item"
+                  if(!isExceptionDish(d, e.house)){
+                    li.appendChild(text)
+                    if (isBeaDish(d, e.house)) {
+                      bDay = true
+                      var beaBadge = document.createElement("span")
+                      beaBadge.className = "badge badge-warning"
+                      var text = document.createTextNode("BEA!")
+                      beaBadge.appendChild(text)
+                      li.appendChild(beaBadge)
+                    }
+                    list.appendChild(li)
+                  }
+                });
+              } else {
+                var li = document.createElement("li")
+                li.className = "list-group-item"
+                var text = document.createTextNode("Information saknas")
+                li.appendChild(text)
+                list.appendChild(li)
+              }
+
+              cardTitle.appendChild(textnode)
+              cardBody2.appendChild(a)
+              card.appendChild(cardTitle)
+              card.appendChild(list)
+              card.appendChild(cardBody2)
+              document.getElementById("houseColumns").appendChild(card)
+        });
+        var foundHoliday = getHolidayByDateInJson(json.additionalData.dates,inputDate.date)
+        if(foundHoliday != null && foundHoliday[0].holiday != null){
+          var holidayBadge = document.createElement("span")
+          holidayBadge.className = "badge badge-danger"
+
+          var textnode = document.createTextNode(foundHoliday[0].holiday)
+          holidayBadge.appendChild(textnode)
+          document.getElementById("dayHeader").appendChild(holidayBadge)
+        }
+
+        if(bDay){
+          var beaBadge = document.createElement("span")
+          beaBadge.className = "badge badge-warning"
+
+          var textnode = document.createTextNode("Bearnaisesås!")
+          beaBadge.appendChild(textnode)
+          document.getElementById("dayHeader").appendChild(beaBadge)
+        }
+      }
+
+
+      /*$.getJSON("lunchData.txt", function(json) {
+        var options = { weekday: 'long', month: 'long', day: 'numeric' };
+        document.getElementById("dayHeader").innerHTML+=" " + new Date(json.additionalData.today).toLocaleDateString("sv-SE",options) + " "
+
+          document.getElementById("timestamp").innerHTML=json.created
+          var tempD = json.additionalData.dates[0].date
+          json.houses.forEach(function(e){
+              var card = document.createElement("div")
+              card.className="card shadow"
+
+              var cardBody = document.createElement("div")
+              cardBody.className = "card-body"
+
+              var cardTitle = document.createElement("div")
+              cardTitle.className = "card-header"
+
+              var textnode = document.createTextNode(e.house)
+
+              var cardBody2 = document.createElement("div")
+              cardBody2.className = "card-body"
+              var a = document.createElement("a")
+              a.href = e.url
+              a.target = "_blank"
+              a.className = "text-secondary"
+              a.appendChild(document.createTextNode("Till menyn"))
+
+              var list = document.createElement("ul")
+              list.className = "list-group list-group-flush"
+
+              if(!hideDishes&& e.dishesPerDate[tempD].length > 0){
+                e.dishesPerDate[tempD].forEach(function(d){
+                  var li = document.createElement("li")
+                  var text = document.createTextNode(d + " ")
+                  li.className = "list-group-item"
+                  if(!isExceptionDish(d, e.house)){
+                    li.appendChild(text)
+                    if (isBeaDish(d, e.house)) {
+                      bDay = true
+                      var beaBadge = document.createElement("span")
+                      beaBadge.className = "badge badge-warning"
+                      var text = document.createTextNode("BEA!")
+                      beaBadge.appendChild(text)
+                      li.appendChild(beaBadge)
+                    }
+                    list.appendChild(li)
+                  }
+                });
+              } else {
+                var li = document.createElement("li")
+                li.className = "list-group-item"
+                var text = document.createTextNode("Information saknas")
+                li.appendChild(text)
+                list.appendChild(li)
+              }
+
+              cardTitle.appendChild(textnode)
+              cardBody2.appendChild(a)
+              card.appendChild(cardTitle)
+              card.appendChild(list)
+              card.appendChild(cardBody2)
+              document.getElementById("houseColumns").appendChild(card)
+        });
+        if(json.additionalData.holiday){
+          var holidayBadge = document.createElement("span")
+          holidayBadge.className = "badge badge-danger"
+
+          var textnode = document.createTextNode(json.additionalData.holiday)
+          holidayBadge.appendChild(textnode)
+          document.getElementById("dayHeader").appendChild(holidayBadge)
+        }
+
+        if(bDay){
+          var beaBadge = document.createElement("span")
+          beaBadge.className = "badge badge-warning"
+
+          var textnode = document.createTextNode("Bearnaisesås!")
+          beaBadge.appendChild(textnode)
+          document.getElementById("dayHeader").appendChild(beaBadge)
+        }
+      });*/
+    </script>
+  </body>
+</html>
