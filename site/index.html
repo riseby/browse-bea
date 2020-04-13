@@ -6,8 +6,14 @@
     <title>fpsBea</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/806c1c9231.js" crossorigin="anonymous"></script>
+    <style>
+      body {
+        padding-bottom: 75px;
+      }
+    </style>
   </head>
   <body class="bg-white">
 
@@ -17,34 +23,32 @@
                 <span id="dayTitle"></span> bea!
                 <small class="text-muted">och lunch</small>
             </h1>
-            <hr class="my-4">
             <h4 id="dayHeader">
             </h4>
-
         </div>
     </div>
-    <nav>
-      <div class="nav nav-tabs" id="navDays" role="tablist">
-      </div>
-    </nav>
+    <nav class="nav nav-tabs container" id="navDays" role="tablist">
 
+    </nav>
     <div class="container p-4">
 
 
       <div class="card-columns" id="houseColumns">
       </div>
 
-      <footer class="pager-footer border-top pt-3">
-        <div class="container">
+
+    </div>
+    <footer class="pager-footer border-top pt-3 fixed-bottom bg-light ">
+      <div class="container">
         <p class="text-center">
           Senast uppdaterad: <span id="timestamp"></span>
         </p>
         <p class="text-center">
-           <a href="https://github.com/riseby/browse-bea" target="_blank">Github</a>
+           <a href="https://github.com/riseby/" title="Github riseby" data-toggle="tooltip" data-placement="top" class="text-secondary" target="_blank"><i class="fa fa-github fa-lg"></i></a>
+           <a href="https://github.com/riseby/browse-bea" title="Code: browse-bea" data-toggle="tooltip" data-placement="top" class="text-secondary" target="_blank"><i class="fas fa-code fa-lg"></i></a>
         </p>
-      </div>
-      </footer>
     </div>
+    </footer>
     <script>
       var beaRegex = /b[eéè][aáà]/gi;
       var beaDishExeption =  new Map([
@@ -222,7 +226,9 @@
         }
       }
 
-
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
       /*$.getJSON("lunchData.txt", function(json) {
         var options = { weekday: 'long', month: 'long', day: 'numeric' };
         document.getElementById("dayHeader").innerHTML+=" " + new Date(json.additionalData.today).toLocaleDateString("sv-SE",options) + " "
