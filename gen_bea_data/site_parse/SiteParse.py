@@ -137,12 +137,10 @@ class Filmhuset(SiteParse):
         req = requests.get(self.url)
         self.status = req.status_code
         self.html = lxml.html.fromstring(req.text)
-
-    def __getDishesByDate(self,date):
-        dayRegEx=self.getRegEx(date)
-
         for br in self.html.xpath("*//br"):
             br.tail = "\n" + br.tail if br.tail else "\n"
+
+    def __getDishesByDate(self,date):
         lunchMenu =  self.html.xpath("//div[@class='day']")[0]
         textMenu = str(lunchMenu.text_content())
 
@@ -186,10 +184,6 @@ class Sidahuset(SiteParse):
         self.html = lxml.html.fromstring(req.text)
 
     def __getDishesByDate(self,date):
-        dayRegEx=self.getRegEx(date)
-
-        #for br in self.html.xpath("*//br"):
-        #    br.tail = "\n" + br.tail if br.tail else "\n"
         lunchMenu = self.html.xpath("//div[@class='text_content']")[0]
         textMenu = str(lunchMenu.text_content())
         dayRegEx=self.getRegEx(date)
