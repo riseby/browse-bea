@@ -9,6 +9,8 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/806c1c9231.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js"></script>
+    <script src="logo.js"></script>
     <style>
       body {
         padding-bottom: 75px;
@@ -19,12 +21,19 @@
 
     <div class="jumbotron jumbotron-fluid border-bottom bg-light p-4">
         <div class="container">
-            <h1 class="display-5">
-                <span id="dayTitle"></span> bea!
-                <small class="text-muted">och lunch</small>
-            </h1>
-            <h4 id="dayHeader">
-            </h4>
+          <div class="row">
+            <div class="d-none d-md-block col-md-auto">
+              <div id="logo"></div>
+            </div>
+            <div class="col-md-auto">
+              <h1 class="display-5">
+                  <span id="dayTitle"></span> bea!
+                  <small class="text-muted">och lunch</small>
+              </h1>
+              <h4 id="dayHeader">
+              </h4>
+            </div>
+          </div>
         </div>
     </div>
     <nav class="nav nav-tabs container" id="navDays" role="tablist">
