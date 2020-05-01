@@ -14,11 +14,12 @@ function setup() {
 
 function draw() {
   clear()
-  let c = color(255, 204, 0)
+  let fc = color(255, 204, 0)
+  let sc = color(100, 100, 100)
 
-  fill(c)
-  stroke('black')
-  strokeWeight(1.5)
+  fill(fc)
+  stroke(sc)
+  strokeWeight(1.3)
   translate(height/2,width/2)
   n += nincrement
   beginShape()
