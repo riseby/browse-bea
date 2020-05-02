@@ -152,6 +152,7 @@
 
       function visualizeLunchDate(json, inputDate){
         clearDomLunchDate()
+        setBeaLogoColors(false)
         var bDay = false
         var options = { weekday: 'long'};
         var options2 = { weekday: 'long', month: 'long', day: 'numeric' };
@@ -232,6 +233,7 @@
           var textnode = document.createTextNode("Bearnaisesås!")
           beaBadge.appendChild(textnode)
           document.getElementById("dayHeader").appendChild(beaBadge)
+          setBeaLogoColors(true)
         }
       }
 
