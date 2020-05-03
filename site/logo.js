@@ -8,6 +8,11 @@ let nincrement = 0.01
 var c1noB = 'black'
 var c2noB = 'white'
 var c3noB = c1noB
+
+var c1H = '#dc3545'
+var c2H = c2noB
+var c3H = c1H
+
 var c1B = [255, 193, 7]
 var c2B = [33, 37, 41]
 var c3B = '#dee2e6'
@@ -72,11 +77,16 @@ function draw() {
   //text("B", dxTot, dyTot)
 }
 
-function setBeaLogoColors(b) {
-  if(b){
+function setBeaLogoColors(dayState) {
+  if(dayState == 'b'){
     c1 = c1B
     c2 = c2B
     c3 = c3B
+  } else if (dayState == 'h'){
+    c1 = c1H
+    c2 = c2H
+    c3 = c3H
+    console.log(c1H)
   } else {
     c1 = c1noB
     c2 = c2noB

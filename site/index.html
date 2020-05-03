@@ -225,6 +225,7 @@
           var textnode = document.createTextNode(foundHoliday[0].holiday)
           holidayBadge.appendChild(textnode)
           document.getElementById("dayHeader").appendChild(holidayBadge)
+          setBeaLogoColors('h')
         }
 
         if(bDay){
@@ -234,7 +235,7 @@
           var textnode = document.createTextNode("Bearnaisesås!")
           beaBadge.appendChild(textnode)
           document.getElementById("dayHeader").appendChild(beaBadge)
-          setBeaLogoColors(true)
+          setBeaLogoColors('b')
         }
       }
 
