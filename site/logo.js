@@ -24,8 +24,8 @@ var c3 = c3noB
 function setup() {
   var canvas = createCanvas(xySize, xySize)
   canvas.parent('logo')
-  frameRate(30)
-  textSize(60);
+  frameRate(40)
+  textSize(60)
   textFont('Courier Prime')
   textAlign(CENTER, CENTER)
   smooth()
