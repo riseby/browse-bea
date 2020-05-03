@@ -86,7 +86,6 @@ function setBeaLogoColors(dayState) {
     c1 = c1H
     c2 = c2H
     c3 = c3H
-    console.log(c1H)
   } else {
     c1 = c1noB
     c2 = c2noB
