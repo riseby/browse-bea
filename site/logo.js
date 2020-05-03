@@ -2,6 +2,8 @@ let xySize = 100
 let maxRadius = xySize/2
 let minRadius = 30
 let noiseWeight = maxRadius - minRadius
+let numOfCirclePoints = 64
+
 let n = 0.0
 let nincrement = 0.01
 
@@ -21,60 +23,50 @@ var c1 = c1noB
 var c2 = c2noB
 var c3 = c3noB
 
+let font
+function preload() {
+  font = loadFont('fonts/CourierPrime-Bold.ttf');
+}
 function setup() {
   var canvas = createCanvas(xySize, xySize)
   canvas.parent('logo')
   frameRate(40)
-  textSize(60)
-  textFont('Courier Prime')
+  textSize(55)
+  textFont(font)
   textAlign(CENTER, CENTER)
   smooth()
 }
 
 function draw() {
   clear()
+  noiseDetail(5,0.5)
   let fc = color(c1)
   let sc = color(c2)
-  //let sc = color('white')
-  //let w = color('gray')
 
   fill(fc)
   stroke(color(c3))
-  //noStroke()
   strokeWeight(1)
   translate(height/2,width/2)
   n += nincrement
-  var dxMax = 0.0;
-  var dyMax = 0.0;
-  var magMax = 0.0;
-
-  beginShape()
-    for(var i = 0;i < TWO_PI;i += 0.1){
-      var x = cos(i)
-      var y = sin(i)
-      var r = noise(x+10,y+10,n)
-      vertex(x*(r*noiseWeight+minRadius),y*(r*noiseWeight+minRadius))
-    }
-
-  endShape(CLOSE)
-  stroke(color('red'))
-  strokeWeight(3)
   var dxTot = 0.0;
   var dyTot = 0.0;
-  for(var i = 0;i < 8;i += 1){
-    var x = cos(i*PI/4)
-    var y = sin(i*PI/4)
-    var r = noise(x+10,y+10,n)
-    dxTot += (x * (r*noiseWeight+minRadius))
-    dyTot += (y * (r*noiseWeight+minRadius))
+  beginShape()
+    for(var i = 0;i < numOfCirclePoints;i += 1){
+      var rad = i*TWO_PI/numOfCirclePoints
+      var x = cos(rad)
+      var y = sin(rad)
+      var no = noise(x+10,y+10,n)
+      var r = no*noiseWeight+minRadius
+      dxTot += x*no
+      dyTot += y*no
+      vertex(x*r,y*r)
+    }
+  endShape(CLOSE)
 
-  }
 
-  //point(dxTot, dyTot)
   noStroke()
   fill(sc)
-  text("B", dxTot, dyTot + (textAscent()- textDescent())/4)
-  //text("B", dxTot, dyTot)
+  text("B", dxTot, dyTot)
 }
 
 function setBeaLogoColors(dayState) {
