@@ -25,31 +25,41 @@ var c3 = c3noB
 
 let font
 function preload() {
-  font = loadFont('fonts/CourierPrime-Bold.ttf');
+  font = loadFont('fonts/CourierPrime-Bold.ttf')
+  beaShader = loadShader('shaders/bea.vert', 'shaders/bea.frag')
 }
 function setup() {
-  var canvas = createCanvas(xySize, xySize)
+  var canvas = createCanvas(xySize, xySize,WEBGL)
   canvas.parent('logo')
-  frameRate(40)
-  textSize(55)
-  textFont(font)
-  textAlign(CENTER, CENTER)
-  smooth()
+  noStroke()
+  shaderTexture = createGraphics(xySize, xySize, WEBGL);
+  shaderTexture.noStroke()
+  //frameRate(40)
+  //textSize(55)
+  //textFont(font)
+  //textAlign(CENTER, CENTER)
+  //smooth()
 }
 
 function draw() {
   clear()
-  noiseDetail(5,0.5)
-  let fc = color(c1)
-  let sc = color(c2)
+  //noiseDetail(5,0.5)
+  //let fc = color(c1)
+  //let sc = color(c2)
 
-  fill(fc)
-  stroke(color(c3))
-  strokeWeight(1)
-  translate(height/2,width/2)
+
+  shaderTexture.shader(beaShader)
+  beaShader.setUniform("u_resolution", [xySize, xySize])
+  shaderTexture.rect(0,0,xySize,xySize)
+  //background(255)
+  texture(shaderTexture)
+  //fill(fc)
+  //stroke(color(c3))
+  //strokeWeight(1)
   n += nincrement
   var dxTot = 0.0;
   var dyTot = 0.0;
+  //translate(height/2,width/2)
   beginShape()
     for(var i = 0;i < numOfCirclePoints;i += 1){
       var rad = i*TWO_PI/numOfCirclePoints
@@ -59,14 +69,13 @@ function draw() {
       var r = no*noiseWeight+minRadius
       dxTot += x*no
       dyTot += y*no
-      vertex(x*r,y*r)
+      vertex(x*r,y*r,0,x*r,y*r)
     }
-  endShape(CLOSE)
+  endShape()
 
-
-  noStroke()
-  fill(sc)
-  text("B", dxTot, dyTot)
+  //noStroke()
+  //fill(sc)
+  //text("B", dxTot, dyTot)
 }
 
 function setBeaLogoColors(dayState) {
