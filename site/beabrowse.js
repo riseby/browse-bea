@@ -91,7 +91,7 @@
 
   function visualizeLunchDate(json, inputDate){
     clearDomLunchDate()
-    setBeaLogoColors(false)
+    setBeaLogoColors()
     var bDay = false
     var options = { weekday: 'long'};
     var options2 = { weekday: 'long', month: 'long', day: 'numeric' };
