@@ -2,6 +2,7 @@ import requests
 import lxml.html
 import re
 import datetime
+import PyPDF2
 
 class SiteParse:
     regEx = {0: 'ndag(.*)tisdag', 1: 'tisdag(.*)onsdag', 2: 'onsdag(.*)torsdag', 3: 'torsdag(.*)fredag[^a-z]', 4:'fredag(.*?)(\n\n|\n\s\n)', 5:'', 6:''}
@@ -195,5 +196,43 @@ class Sidahuset(SiteParse):
                 return self.cleanOutputList(re.split('\n',dayMenu))
         else:
             return ""
+
+class Eriksbakficka(SiteParse):
+    def __init__(self,url,house,dates):
+        self.url = url
+        self.house = house
+        self.status = ""
+        self.data = {}
+        if datetime.date.today().weekday() != 5 and datetime.date.today().weekday() != 6:
+            self.__fetchData()
+        if(self.status == 200):
+            for d in dates:
+                self.data[d.strftime("%Y-%m-%d")] = self.__getDishesByDate(d)
+
+    def __validMenuWeek(self,menuDateStr):
+        return True
+
+    def __fetchData(self):
+        req = requests.get(self.url)
+        self.status = req.status_code
+        with open("erikstemp", "wb") as handle:
+                handle.write(req.content)
+        file = open("erikstemp", "rb")
+        fileReader = PyPDF2.PdfFileReader(file)
+        page = fileReader.getPage(0)
+        self.pdfContent = page.extractText()
+
+    def __getDishesByDate(self,date):
+        textMenu =  self.pdfContent
+        textDateToValidate = ""
+
+        dayRegEx=self.getRegEx(date)
+        if dayRegEx and self.__validMenuWeek(textDateToValidate):
+            p = re.compile(dayRegEx,re.S | re.I)
+            m = p.search(textMenu)
+            if m:
+                dayMenu = m.group(1)
+                return self.cleanOutputList(re.split('\n',dayMenu))
+        return ""
 
 ## TODO:

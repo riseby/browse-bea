@@ -3,6 +3,7 @@ from site_parse import Gastrogate
 from site_parse import Filmhuset
 from site_parse import Sidahuset
 from site_parse import Styrman
+from site_parse import Eriksbakficka
 
 import datetime
 import configparser
@@ -27,7 +28,7 @@ configPath = ""
 additionalDataFilename = "addData.txt"
 ldataFilename = "lunchData.txt"
 configFilename = "lunchData.config"
-configToClass = {'': SiteParse, 'Gastrogate': Gastrogate, 'Sidahuset': Sidahuset, 'Filmhuset': Filmhuset, 'Styrman': Styrman}
+configToClass = {'': SiteParse, 'Gastrogate': Gastrogate, 'Sidahuset': Sidahuset, 'Filmhuset': Filmhuset, 'Styrman': Styrman, 'Eriksbakficka': Eriksbakficka}
 lunchDates = getLunchDates(datetime.date.today())
 
 if sys.argv[1]:
