@@ -29,7 +29,8 @@ additionalDataFilename = "addData.txt"
 ldataFilename = "lunchData.txt"
 configFilename = "lunchData.config"
 configToClass = {'': SiteParse, 'Gastrogate': Gastrogate, 'Sidahuset': Sidahuset, 'Filmhuset': Filmhuset, 'Styrman': Styrman, 'Eriksbakficka': Eriksbakficka}
-lunchDates = getLunchDates(datetime.date.today())
+# lunchDates = getLunchDates(datetime.date.today())
+lunchDates = getLunchDates(datetime.date.fromisoformat('2020-05-25'))
 
 if sys.argv[1]:
     path = sys.argv[1]

@@ -5,7 +5,6 @@ import datetime
 import PyPDF2
 
 class SiteParse:
-    regEx = {0: 'ndag(.*)tisdag', 1: 'tisdag(.*)onsdag', 2: 'onsdag(.*)torsdag', 3: 'torsdag(.*)fredag[^a-z]', 4:'fredag(.*?)(\n\n|\n\s\n)', 5:'', 6:''}
     status1 = "no valid data or complete data"
 
     def __init__(self,url,house):
@@ -19,6 +18,7 @@ class SiteParse:
 
     def cleanString(self,str):
         cleanStr = re.sub("[\xa0\t\:]","",str)
+        cleanStr = cleanStr.strip()
         return cleanStr
 
     def cleanOutputList(self, l):
@@ -26,8 +26,8 @@ class SiteParse:
         l = list(filter(None,l))
         return l
 
-    def getRegEx(self,date):
-        return self.regEx[date.weekday()]
+    def getRegEx(self,date,regex):
+        return regex[date.weekday()]
 
     def getData(self):
         structuredData = {
@@ -120,6 +120,7 @@ class Filmhuset(SiteParse):
         self.house = house
         self.status = ""
         self.data = {}
+        self.regEx = regEx = {0: 'ndag(.*)tisdag', 1: 'tisdag(.*)onsdag', 2: 'onsdag(.*)torsdag', 3: 'torsdag(.*)fredag[^a-z]', 4:'fredag(.*?)(\n\n|\n\s\n)', 5:'', 6:''}
         if datetime.date.today().weekday() != 5 and datetime.date.today().weekday() != 6:
             self.__fetchData()
         if(self.status == 200):
@@ -148,7 +149,7 @@ class Filmhuset(SiteParse):
         dateToValidate =  self.html.xpath("//div[@class='divider-full']")[0]
         textDateToValidate = str(dateToValidate.text_content())
 
-        dayRegEx=self.getRegEx(date)
+        dayRegEx=self.getRegEx(date,self.regEx)
         if dayRegEx and self.__validMenuWeek(textDateToValidate):
             p = re.compile(dayRegEx,re.S | re.I)
             m = p.search(textMenu)
@@ -203,30 +204,37 @@ class Eriksbakficka(SiteParse):
         self.house = house
         self.status = ""
         self.data = {}
-        if datetime.date.today().weekday() != 5 and datetime.date.today().weekday() != 6:
-            self.__fetchData()
+        self.regEx = {0: 'ndag(.*)tisdag', 1: 'tisdag(.*)onsdag', 2: 'onsdag(.*)torsdag', 3: 'torsdag(.*)fredag[^a-z]', 4:'fredag(.*?)(veckans)', 5:'', 6:''}
+
+        #if datetime.date.today().weekday() != 5 and datetime.date.today().weekday() != 6:
+        self.__fetchData()
         if(self.status == 200):
             for d in dates:
                 self.data[d.strftime("%Y-%m-%d")] = self.__getDishesByDate(d)
 
     def __validMenuWeek(self,menuDateStr):
-        return True
+        weekNum = datetime.datetime.now().isocalendar()[1]
+        m = re.search(".*vecka\:?\s+(\d{,2})",menuDateStr,re.IGNORECASE)
+        if m:
+            return int(m.group(1)) == weekNum
+        else:
+            return False
 
     def __fetchData(self):
         req = requests.get(self.url)
         self.status = req.status_code
-        with open("erikstemp", "wb") as handle:
+        with open("pdfcache/temp.pdf", "wb") as handle:
                 handle.write(req.content)
-        file = open("erikstemp", "rb")
+        file = open("pdfcache/temp.pdf", "rb")
         fileReader = PyPDF2.PdfFileReader(file)
         page = fileReader.getPage(0)
         self.pdfContent = page.extractText()
 
     def __getDishesByDate(self,date):
         textMenu =  self.pdfContent
-        textDateToValidate = ""
+        textDateToValidate = textMenu
 
-        dayRegEx=self.getRegEx(date)
+        dayRegEx=self.getRegEx(date,self.regEx)
         if dayRegEx and self.__validMenuWeek(textDateToValidate):
             p = re.compile(dayRegEx,re.S | re.I)
             m = p.search(textMenu)
