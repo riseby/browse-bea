@@ -23,7 +23,7 @@ def getLunchDates(startDate):
     return dates
 
 
-path = ""
+c = ""
 configPath = ""
 additionalDataFilename = "addData.txt"
 ldataFilename = "lunchData.txt"
@@ -92,7 +92,7 @@ else:
     config.read(configPath + configFilename)
 
     for i in config.sections():
-        h = configToClass[config[i]['type']](config[i]['url'], i,lunchDates)
+        h = configToClass[config[i]['type']](path,config[i]['url'], i,lunchDates)
         data = h.getData()
         lunchData['houses'].append(data)
 

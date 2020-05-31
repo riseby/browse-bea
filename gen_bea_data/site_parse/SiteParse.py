@@ -39,7 +39,8 @@ class SiteParse:
         return structuredData
 
 class Gastrogate(SiteParse):
-    def __init__(self,url,house,dates):
+    def __init__(self,savePath,url,house,dates):
+        self.savePath = savePath
         self.url = url
         self.house = house
         self.status = ""
@@ -80,7 +81,8 @@ class Gastrogate(SiteParse):
         return ""
 
 class Styrman(SiteParse):
-    def __init__(self,url,house,dates):
+    def __init__(self,savePath,url,house,dates):
+        self.savePath = savePath
         self.url = url
         self.house = house
         self.status = ""
@@ -115,7 +117,8 @@ class Styrman(SiteParse):
         return ""
 
 class Filmhuset(SiteParse):
-    def __init__(self,url,house,dates):
+    def __init__(self,savePath,url,house,dates):
+        self.savePath = savePath
         self.url = url
         self.house = house
         self.status = ""
@@ -160,7 +163,8 @@ class Filmhuset(SiteParse):
 
 
 class Sidahuset(SiteParse):
-    def __init__(self,url,house,dates):
+    def __init__(self,savePath,url,house,dates):
+        self.savePath = savePath
         self.url = url
         self.house = house
         self.status = ""
@@ -199,7 +203,8 @@ class Sidahuset(SiteParse):
             return ""
 
 class Eriksbakficka(SiteParse):
-    def __init__(self,url,house,dates):
+    def __init__(self,savePath,url,house,dates):
+        self.savePath = savePath
         self.url = url
         self.house = house
         self.status = ""
@@ -223,9 +228,9 @@ class Eriksbakficka(SiteParse):
     def __fetchData(self):
         req = requests.get(self.url)
         self.status = req.status_code
-        with open("pdfcache/temp.pdf", "wb") as handle:
+        with open(self.savePath + "temp.pdf", "wb") as handle:
                 handle.write(req.content)
-        file = open("pdfcache/temp.pdf", "rb")
+        file = open(self.savePath + "temp.pdf", "rb")
         fileReader = PyPDF2.PdfFileReader(file)
         page = fileReader.getPage(0)
         self.pdfContent = page.extractText()
