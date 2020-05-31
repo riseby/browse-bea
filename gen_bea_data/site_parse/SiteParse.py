@@ -211,8 +211,8 @@ class Eriksbakficka(SiteParse):
         self.data = {}
         self.regEx = {0: 'ndag(.*)tisdag', 1: 'tisdag(.*)onsdag', 2: 'onsdag(.*)torsdag', 3: 'torsdag(.*)fredag[^a-z]', 4:'fredag(.*?)(veckans)', 5:'', 6:''}
 
-        #if datetime.date.today().weekday() != 5 and datetime.date.today().weekday() != 6:
-        self.__fetchData()
+        if datetime.date.today().weekday() != 5 and datetime.date.today().weekday() != 6:
+            self.__fetchData()
         if(self.status == 200):
             for d in dates:
                 self.data[d.strftime("%Y-%m-%d")] = self.__getDishesByDate(d)
