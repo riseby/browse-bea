@@ -33,7 +33,6 @@ class SiteParse:
         status = False
         for day, dayValue in self.data.items():
             if dayValue:
-                print(dayValue)
                 status = True
         if not status:
             self.status = self.status1
