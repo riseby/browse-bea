@@ -91,7 +91,7 @@
 
   function visualizeLunchDate(json, inputDate){
     clearDomLunchDate()
-    setBeaLogoColors()
+    setBeaLogoColors(false)
     var bDay = false
     var options = { weekday: 'long'};
     var options2 = { weekday: 'long', month: 'long', day: 'numeric' };
@@ -110,6 +110,9 @@
           cardTitle.className = "card-header"
 
           var textnode = document.createTextNode(e.house)
+          var priceIcons = document.createElement("div")
+          priceIcons.className = "priceIcons"
+
 
           var cardBody2 = document.createElement("div")
           cardBody2.className = "card-body"
@@ -149,6 +152,12 @@
           }
 
           cardTitle.appendChild(textnode)
+          cardTitle.appendChild(priceIcons)
+          for (var i = 0; i < e.priceLevel; i++) {
+            var price = document.createElement("i")
+            price.className = "fa fa-usd"
+            priceIcons.appendChild(price)
+          }
           cardBody2.appendChild(a)
           card.appendChild(cardTitle)
           card.appendChild(list)

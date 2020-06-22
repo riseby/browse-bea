@@ -29,6 +29,15 @@ class SiteParse:
     def getRegEx(self,date,regex):
         return regex[date.weekday()]
 
+    def noDataFound(self):
+        status = False
+        for day, dayValue in self.data.items():
+            if dayValue:
+                print(dayValue)
+                status = True
+        if not status:
+            self.status = self.status1
+
     def getData(self):
         structuredData = {
             "house": self.house,
@@ -51,6 +60,7 @@ class Gastrogate(SiteParse):
         if(self.status == 200):
             for d in dates:
                 self.data[d.strftime("%Y-%m-%d")] = self.__getDishesByDate(d)
+            self.noDataFound()
 
     def __validMenuDate(self,menuDateStr, date):
         d = date.day
@@ -93,6 +103,7 @@ class Styrman(SiteParse):
         if(self.status == 200):
             for d in dates:
                 self.data[d.strftime("%Y-%m-%d")] = self.__getDishesByDate(d)
+            self.noDataFound()
 
     def __validMenuDate(self,menuDateStr, date):
         d = date.strftime("%-d/%-m")
@@ -129,6 +140,7 @@ class Filmhuset(SiteParse):
         if(self.status == 200):
             for d in dates:
                 self.data[d.strftime("%Y-%m-%d")] = self.__getDishesByDate(d)
+            self.noDataFound()
 
     def __validMenuWeek(self,menuDateStr):
         weekNum = datetime.datetime.now().isocalendar()[1]
@@ -173,8 +185,7 @@ class Sidahuset(SiteParse):
         if(self.status == 200):
             for d in dates:
                 self.data[d.strftime("%Y-%m-%d")] = self.__getDishesByDate(d)
-                if(self.data[d.strftime("%Y-%m-%d")] == ""):
-                    self.status = self.status1
+            self.noDataFound()
 
     def __validMenuWeek(self,menuDateStr):
         weekNum = datetime.datetime.now().isocalendar()[1]
@@ -216,6 +227,7 @@ class Eriksbakficka(SiteParse):
         if(self.status == 200):
             for d in dates:
                 self.data[d.strftime("%Y-%m-%d")] = self.__getDishesByDate(d)
+            self.noDataFound()
 
     def __validMenuWeek(self,menuDateStr):
         weekNum = datetime.datetime.now().isocalendar()[1]

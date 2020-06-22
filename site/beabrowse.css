@@ -10,6 +10,11 @@ body {
 .badge {
   border-radius: 2px;
 }
+
+.priceIcons{
+  float: right;
+}
+
 /*Remove Mozilla Firefox Border – Remove Dotted Line Around Link */
 a:focus {
     outline: none;
