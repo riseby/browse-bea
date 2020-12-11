@@ -180,6 +180,7 @@ class Sidahuset(SiteParse):
         self.house = house
         self.status = ""
         self.data = {}
+        self.divDayDict = {0: 'monday', 1: 'tuesday', 2: 'wednesday', 3: 'thursday', 4:'friday', 5:'', 6:''}
         self.__fetchData()
         if(self.status == 200):
             for d in dates:
@@ -187,8 +188,9 @@ class Sidahuset(SiteParse):
             self.noDataFound()
 
     def __validMenuWeek(self,menuDateStr):
+        print(menuDateStr)
         weekNum = datetime.datetime.now().isocalendar()[1]
-        m = re.search(".*vecka\:?\s+(\d{,2})",menuDateStr,re.IGNORECASE)
+        m = re.search("(\d{1,2})",menuDateStr,re.IGNORECASE)
         if m:
             return int(m.group(1)) == weekNum
         else:
@@ -200,15 +202,14 @@ class Sidahuset(SiteParse):
         self.html = lxml.html.fromstring(req.text)
 
     def __getDishesByDate(self,date):
-        lunchMenu = self.html.xpath("//div[@class='text_content']")[0]
+        lunchMenu = self.html.xpath("//div[@class='menu-content']")[0]
+        menuHeader = lunchMenu.xpath("//div[@class='menu-heading']")[0]
         textMenu = str(lunchMenu.text_content())
-        dayRegEx=self.getRegEx(date)
-        if dayRegEx and self.__validMenuWeek(textMenu):
-            p = re.compile(dayRegEx,re.S | re.I)
-            m = p.search(textMenu)
-            if m:
-                dayMenu = m.group(1)
-                return self.cleanOutputList(re.split('\n',dayMenu))
+        dayDivClass=self.getRegEx(date,self.divDayDict)
+        if dayDivClass and self.__validMenuWeek(str(menuHeader.text_content())):
+            path = "//div[@class='menu-item " + dayDivClass + "']//p"
+            lunchMenuDay = lunchMenu.xpath(path)
+            return self.cleanOutputList([dish.text_content() for dish in lunchMenuDay])
         else:
             return ""
 
